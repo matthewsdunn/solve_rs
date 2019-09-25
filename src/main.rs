@@ -30,9 +30,18 @@ fn in_col(grid: &mut Array2<u8>, col: usize, number: u8) -> bool {
 /// 'number' is found in the 3x3 section of the grid in which row/col
 /// are found
 fn in_box(grid: &mut Array2<u8>, row: usize, col: usize, number: u8) -> bool {
+    let b = grid;
     return true;
 }
 
+/// Returns a bool indicating whether the proposed assignment of a particular
+/// number to a particular cell would violate any of the constraints of the
+/// puzzle, as expressed via the functions above
+fn is_allowed(grid: &mut Array2<u8>, row: usize, col: usize, number: u8) -> bool {
+    !in_row(grid, row, number) && !in_col(grid, col, number) && !in_box(grid, row, col, number)
+}
+
+/// Entry point
 fn main() {
     let mut grid = array![
         [0, 1, 2, 3, 4, 5, 6, 7, 8],
