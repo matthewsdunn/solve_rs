@@ -27,18 +27,42 @@ fn in_col(grid: &mut Array2<u8>, col: usize, number: u8) -> bool {
 }
 
 /// Returns a bool indicating whether or not the number passed in as
-/// 'number' is found in the 3x3 section of the grid in which row/col
-/// are found
+/// 'number' is found in the 3x3 section of the 9x9 grid in which
+/// row/col are found
 fn in_box(grid: &mut Array2<u8>, row: usize, col: usize, number: u8) -> bool {
-    let b = grid;
-    return true;
+    // because, given a 9x9 Sudoku grid,
+    // each 'box' will be of size 3x3
+    for x in 0..3 {
+        for y in 0..3 {
+            let r = grid.slice(s![x + row, y + col]);
+            if r.iter().any(|v: &u8| *v == number) {
+                return true
+            }
+        }
+    }
+
+    return false
 }
 
 /// Returns a bool indicating whether the proposed assignment of a particular
 /// number to a particular cell would violate any of the constraints of the
 /// puzzle, as expressed via the functions above
-fn is_allowed(grid: &mut Array2<u8>, row: usize, col: usize, number: u8) -> bool {
-    !in_row(grid, row, number) && !in_col(grid, col, number) && !in_box(grid, row, col, number)
+fn is_safe(grid: &mut Array2<u8>, row: usize, col: usize, number: u8) -> bool {
+    !in_row(grid, row, number) &&
+    !in_col(grid, col, number) &&
+    !in_box(grid, row - row % 3, col - col % 3, number)
+}
+
+fn get_next_location(grid: &mut Array2<u8>) -> (usize, usize) {
+    for x in 0..9 {
+        for y in 0..9 {
+            // if grid[x as usize][y as usize] == 0 {
+            //     return (x, y)
+            // }
+        }
+    }
+
+    return (2, 3)
 }
 
 /// Entry point
@@ -59,5 +83,5 @@ fn main() {
 
     assert_eq!(in_row(&mut grid, 1, 4), true);
     assert_eq!(in_col(&mut grid, 1, 1), true);
-    assert_eq!(in_box(&mut grid, 1, 1, 1), true);
+    assert_eq!(in_box(&mut grid, 1, 1, 2), true);
 }
