@@ -21,7 +21,7 @@ fn in_row(grid: &mut [[u8; 9]; 9], row: usize, number: u8) -> bool {
 /// 'number' is found in the column passed in as 'col'
 fn in_col(grid: &mut [[u8; 9]; 9], col: usize, number: u8) -> bool {
     // TODO: Or faster to do a 'collect' into a new array and search that?
-    for x in 0..=9 {
+    for x in 0..9 {
         if grid[x][col] == number {
             return true;
         }
@@ -59,31 +59,57 @@ fn is_safe(grid: &mut [[u8; 9]; 9], row: usize, col: usize, number: u8) -> bool 
 fn get_next_location(grid: &mut [[u8; 9]; 9]) -> (usize, usize) {
     for x in 0..9 {
         for y in 0..9 {
-            if grid[x as usize][y as usize] == 0 {
-                return (x, y);
+            if grid[x][y] == 0 {
+                return (x, y)
             }
         }
     }
 
     // TODO: Make this a real enum (Option<int> ?)
-    return (42, 42);
+    return (42, 42)
+}
+
+/// The core solving algorithm that brute force, recursively searches through
+/// all options. Returns a bool indicating whether or not it was capable of
+/// successfully solving the puzzle.
+fn solve(grid: &mut [[u8; 9]; 9]) -> bool {
+    let loc = get_next_location(grid);
+    match loc {
+        (42, 42) => return true,
+        (x, y) => {
+            for n in 1..=9 {
+                if is_safe(grid, x, y, n) {
+                    grid[x][y] = n;
+
+                    if solve(grid) {
+                        return true
+                    }
+
+                    // reset the value
+                    grid[x][y] = 0;
+                }
+            }
+        }
+    }
+
+    return false
 }
 
 /// Entry point
 fn main() {
     let mut grid: [[u8; 9]; 9] = [
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        [0, 0, 3, 0, 0, 5, 0, 0, 9],
+        [0, 8, 0, 0, 7, 0, 0, 3, 0],
+        [6, 0, 0, 3, 0, 0, 2, 0, 0],
+        [5, 0, 0, 2, 0, 0, 4, 0, 0],
+        [0, 9, 0, 0, 6, 0, 0, 7, 0],
+        [0, 0, 7, 0, 0, 1, 0, 0, 2],
+        [0, 0, 6, 0, 0, 4, 0, 0, 5],
+        [0, 4, 0, 0, 1, 0, 0, 2, 0],
+        [3, 0, 0, 9, 0, 0, 8, 0, 0],
     ];
 
-    assert_eq!(in_row(&mut grid, 1, 4), true);
-    assert_eq!(in_col(&mut grid, 1, 1), true);
-    assert_eq!(in_box(&mut grid, 1, 1, 2), true);
+    assert_eq!(solve(&mut grid), true);
+
+    println!("Solved puzzle is:\n{:?}", grid);
 }
