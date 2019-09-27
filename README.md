@@ -1,7 +1,7 @@
+# 🔢 solve_rs 🔭
+
 [![Build Status](https://travis-ci.org/mshieldsdunn/solve_rs.svg?branch=master)](https://travis-ci.org/mshieldsdunn/solve_rs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-# 🔢 solve_rs 🔭
 
 ## Overview 🔎
 
