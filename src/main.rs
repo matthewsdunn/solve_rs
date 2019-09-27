@@ -56,33 +56,31 @@ fn is_safe(grid: &mut [[u8; 9]; 9], row: usize, col: usize, number: u8) -> bool 
         && !in_box(grid, row - row % 3, col - col % 3, number)
 }
 
-fn get_next_location(grid: &mut [[u8; 9]; 9]) -> (usize, usize) {
+fn get_next_location(grid: &mut [[u8; 9]; 9]) -> Option<(usize, usize)> {
     for x in 0..9 {
         for y in 0..9 {
             if grid[x][y] == 0 {
-                return (x, y)
+                return Some((x, y));
             }
         }
     }
 
-    // TODO: Make this a real enum (Option<int> ?)
-    return (42, 42)
+    return None;
 }
 
 /// The core solving algorithm that brute force, recursively searches through
 /// all options. Returns a bool indicating whether or not it was capable of
 /// successfully solving the puzzle.
 fn solve(grid: &mut [[u8; 9]; 9]) -> bool {
-    let loc = get_next_location(grid);
-    match loc {
-        (42, 42) => return true,
-        (x, y) => {
+    match get_next_location(grid) {
+        None => return true,
+        Some((x, y)) => {
             for n in 1..=9 {
                 if is_safe(grid, x, y, n) {
-                    grid[x][y] = n;
+                    grid[x as usize][y] = n;
 
                     if solve(grid) {
-                        return true
+                        return true;
                     }
 
                     // reset the value
@@ -92,7 +90,7 @@ fn solve(grid: &mut [[u8; 9]; 9]) -> bool {
         }
     }
 
-    return false
+    return false;
 }
 
 /// Entry point
